@@ -112,6 +112,13 @@
 					</a>
 				</li>
 
+
+				<li>
+					<a href="#gestionReporte" id="aGestionReporte" class="waves-effect" onclick="$('.gestion').css('display','none');$('#gestionReporte').css('display','block')">
+						<i class="text-warning fa fa fa-road fa-fw" aria-hidden="true"></i>Reportes Graficos
+					</a>
+				</li>
+
 				<li>
 					<a href="{url}/logoun" class="waves-effect"><i class="text-danger fa fa-close fa-fw" aria-hidden="true"></i>Cerrar Sesion</a>
 				</li>
@@ -340,6 +347,32 @@
 			</div>
 
 
+			<div class="row gestion" id="gestionReporte" style="display: block">
+				<div class="col-md-12 col-lg-12 col-sm-12">
+					<div class="white-box">
+						<h3 class="box-title">Gestionar Infraccion</h3>
+
+						<button onclick="$('.table-responsive').css('display','none');$('#linea').css('display','block');" class="btn btn-sm btn-info">Serie Linea</button>&nbsp;&nbsp;&nbsp;
+						<button onclick="$('.table-responsive').css('display','none');$('#barra').css('display','block');" class="btn btn-sm btn-success">Grafica Barra</button>
+
+
+						<div class="table-responsive" id="linea" style="display: block">
+							<div class="linea-chart">
+								<center><h3 class="text-info">Serie Lineal de infracciones al año</h3></center>
+							</div>
+						</div>
+
+						<div class="table-responsive" id="barra" style="display: block">
+							<div class="barra-chart">
+								<center><h3 class="text-info">Agente Vs Multas Grafica Barra</h3></center>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+
 			<div class="row gestion" id="gestionInfraccion" style="display: none">
 				<div class="col-md-12 col-lg-12 col-sm-12">
 					<div class="white-box">
@@ -516,9 +549,79 @@
 <script>
 	{loader}
 
+
+
+	$(document).ready(function () {
+		setTimeout(function () {
+			post.$url = "{urlPost}/gestionInfraccion/2";
+			post.$sendPost.setNpost();
+			data = JSON.parse(post.$data);
+			var fec = Object([]);
+			fec.en = 0,fec.fe=0,fec.ma=0,fec.ab=0,fec.my = 0,fec.jn=0,fec.ju=0,fec.ag=0,fec.se=0,fec.oc=0,fec.no=0,fec.di=0;
+			for(var i in data){
+				var f = new Date(data[i].fecha).toLocaleDateString().split("/");
+				switch (f[1]) {
+					case "1" : fec.en += 1;break;
+					case "2" : fec.fe += 1;break;
+					case "3" : fec.ma += 1;break;
+					case "4" : fec.ab += 1;break;
+					case "5" : fec.my += 1;break;
+					case "6" : fec.jn += 1;break;
+					case "7" : fec.ju += 1;break;
+					case "8" : fec.ag += 1;break;
+					case "9" : fec.se += 1;break;
+					case "10" : fec.oc += 1;break;
+					case "11" : fec.no += 1;break;
+					case "12" : fec.di += 1;break;
+				}
+			}
+			var fec = [fec.en,fec.fe,fec.ma,fec.ab,fec.my,fec.jn,fec.ju,fec.ag,fec.se,fec.oc,fec.no,fec.di];
+
+			var a = [];
+			for(var i in data){
+				a.push(data[i].username);
+			}
+			a = a.filter( onlyUnique );
+			var b = [];
+			for(var i in a){
+				var count = 2;
+				for(var j in data){
+					if(data[j].username == a[i]){
+						count++;
+					}
+				}
+				b.push(count);
+			}
+
+
+			new Chartist.Bar('.barra-chart', {
+				labels: a,
+				series: b
+			}, {
+				distributeSeries: true
+			});
+
+			var d = {
+				// A labels array that can contain any sort of values
+				labels: ['Enero', 'Febrero', 'Marzo', 'Abril','Mayo','Junio', 'Julio', 'Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+				// Our series array that contains series objects or in this case series data arrays
+				series: [fec],distributeSeries: true,
+				axisY: {onlyInteger: true,}
+			};
+			new Chartist.Line('.linea-chart', d);
+		},1000);
+	});
+
+	function onlyUnique(value, index, self) {
+		return self.indexOf(value) === index;
+	}
+
+
 	$("textarea").keyup(function () {
 		$("textarea").css("overflow","hidden").css("height",0).css("height",$("textarea").prop('scrollHeight')+"px");
 	});
+
+
 
 	$(document).ready(function () {
 		loader("usuario",{});
@@ -876,6 +979,8 @@
 			$("#detalleLey").html(data.detalle);
 		}
 	});
+
+
 
 
 </script>

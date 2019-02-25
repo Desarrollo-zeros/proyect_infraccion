@@ -38,7 +38,7 @@ class Infraccion extends CI_Controller {
 	}
 
 	public function login(){
-		echo json_encode($this->usuarios->login($this->input->post("username"),sha1($this->input->post("password"))));
+		return $this->response($this->usuarios->login($this->input->post("username"),sha1($this->input->post("password"))));
 	}
 
 
@@ -56,12 +56,12 @@ class Infraccion extends CI_Controller {
 		foreach ($p as $key => $value){
 			array_push($placa,$value->placa);
 		}
-		echo json_encode([compact("documento"),compact("placa")]);
+		return $this->response([compact("documento"),compact("placa")]);
 	}
 
 
 	public function getInfraccion(){
-		echo json_encode($this->infraccion->getInfraccion($this->input->post("key"),$this->input->post("value")));
+		return $this->response($this->infraccion->getInfraccion($this->input->post("key"),$this->input->post("value")));
 	}
 
 
