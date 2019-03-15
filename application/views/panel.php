@@ -551,6 +551,7 @@
 
 
 
+
 	$(document).ready(function () {
 		setTimeout(function () {
 			post.$url = "{urlPost}/gestionInfraccion/2";
@@ -769,6 +770,7 @@
 			var d = new Date(data[i].fecha)
 			string += '<td>'+d.toLocaleDateString()+'</td>';
 			var l  = JSON.stringify(data[i]);
+
 			string += "<td><a href='#ley' class='text-success fa fa-edit fa-fw' onclick='editar("+JSON.stringify(data[i])+","+JSON.stringify(form)+")'>Editar</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href='javascript:void(0)' class='text-danger fa fa-remove fa-fw' onclick='eliminar("+data[i].idInfraccion+","+JSON.stringify(urlDelete)+","+JSON.stringify(table)+")'>Eliminar</a></td>";
 			string += '</tr>';
 		}
